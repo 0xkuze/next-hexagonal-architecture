@@ -1,8 +1,11 @@
-import { PeopleRepository } from './../../domain/PeopleRepository';
-import { People } from "../../domain/People";
+import type { People } from "../../domain/People";
+import type { PeopleRepository } from "./../../domain/PeopleRepository";
 
-export function createPeople(peopleRepository: PeopleRepository, people: People): void {
-	// ensurePeopleIsValid(people);
+export function createPeople(
+  peopleRepository: PeopleRepository,
+  people: People
+): void {
+  // ensurePeopleIsValid(people);
 
-	peopleRepository.save(people);
+  peopleRepository.save(people);
 }

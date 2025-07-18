@@ -1,10 +1,10 @@
 "use client";
+import React, { useContext, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { createPeople } from "@/modules/welcome/application/create/createPeople";
 import { getAllPeople } from "@/modules/welcome/application/get-all/getAllPeople";
-import { v4 as uuidv4 } from "uuid";
-import { People } from "@/modules/welcome/domain/People";
-import { PeopleRepository } from "@/modules/welcome/domain/PeopleRepository";
-import React, { useContext, useEffect } from "react";
+import type { People } from "@/modules/welcome/domain/People";
+import type { PeopleRepository } from "@/modules/welcome/domain/PeopleRepository";
 
 type ContextState = {
   peoples: People[];
@@ -29,14 +29,14 @@ export const WelcomeContextProvider = ({
     getAllPeoples();
   };
 
-  const getAllPeoples = () => {
+  const getAllPeoples = React.useCallback(() => {
     const peoples = getAllPeople(repository);
     setPeoples(peoples);
-  };
+  }, [repository]);
 
   useEffect(() => {
     getAllPeoples();
-  }, []);
+  }, [getAllPeoples]);
 
   return (
     <WelcomeContext.Provider value={{ peoples, createPeople: create }}>

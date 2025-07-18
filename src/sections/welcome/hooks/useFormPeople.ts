@@ -1,23 +1,25 @@
-import * as yup from "yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
-import { People } from "@/modules/welcome/domain/People";
+import { z } from "zod";
+import type { People } from "@/modules/welcome/domain/People";
 import { usePeopleContext } from "../context/WelcomeContextProvider";
 
-const schema = yup.object().shape({
-  name: yup
+const schema = z.object({
+  name: z
     .string()
-    .required("Name is required")
+    .min(1, "Name is required")
     .min(3, "Name must be at least 3 characters")
     .max(50, "Name must be at most 50 characters"),
-  imageUrl: yup
+  imageUrl: z
     .string()
-    .required("Image Url is required")
-    .test("url", "Invalid image url", (value) => {
-      return /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*\.(jpe?g|png|gif|svg|WEBP|JPG)$/.test(
-        value
-      );
-    }),
+    .min(1, "Image URL is required")
+    .url("Must be a valid URL")
+    .refine(
+      (value) => {
+        return /\.(jpe?g|png|gif|svg|webp)$/i.test(value);
+      },
+      { message: "Must be a valid image URL (jpg, png, gif, svg, webp)" }
+    ),
 });
 
 export const useFormPeople = () => {
@@ -27,7 +29,7 @@ export const useFormPeople = () => {
     formState: { errors },
     reset,
   } = useForm<People>({
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
   });
   const { createPeople } = usePeopleContext();
 

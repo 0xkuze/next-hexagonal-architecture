@@ -57,10 +57,10 @@ All commands are run from the root of the project, from a terminal:
 
 | Command                | Action                                             |
 | :----------------------| :------------------------------------------------- |
-| `pnpm install`         | Installs dependencies                              |
-| `pnpm dev`             | Starts local dev server at `localhost:3000`        |
-| `pnpm build`           | Build your production site to `./.next/`            |
-| `pnpm preview`         | Preview your build locally, before deploying       |
+| `bun install`          | Installs dependencies                              |
+| `bun dev`              | Starts local dev server at `localhost:3000`        |
+| `bun build`            | Build your production site to `./.next/`            |
+| `bun start`            | Preview your build locally, before deploying       |
 
 
 ## ⭐ Contribute

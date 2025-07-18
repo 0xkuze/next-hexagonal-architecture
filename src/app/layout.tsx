@@ -17,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={poppins.className + " bg-gray-900/90"}>
-      <body className="max-w-[1400px] mx-auto mt-40 justify-center text-center h-full sm:px-0 px-8">
+    <html lang="en" className={poppins.className}>
+      <body className="mx-auto mt-40 h-full max-w-[1400px] justify-center px-8 text-center sm:px-0">
         {children}
       </body>
     </html>

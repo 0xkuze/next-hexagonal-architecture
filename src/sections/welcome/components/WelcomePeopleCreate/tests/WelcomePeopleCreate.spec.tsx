@@ -1,8 +1,8 @@
-import { render, screen, cleanup } from "@testing-library/react";
-import { expect, it, beforeEach, describe, vi } from "vitest";
-import WelcomePeopleCreate from "../WelcomePeopleCreate";
-import { WelcomeContextProvider } from "@/sections/welcome/context";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { WelcomeContextProvider } from "@/sections/welcome/context";
+import WelcomePeopleCreate from "../WelcomePeopleCreate";
 
 beforeEach(cleanup);
 const save = vi.fn();
@@ -20,9 +20,9 @@ describe("Tag Component", () => {
       </WelcomeContextProvider>
     );
 
-    const inputName = screen.getByPlaceholderText("Cristian Fonseca");
+    const inputName = screen.getByPlaceholderText("Enter full name");
     await userEvent.type(inputName, "Cristian");
-    const inputImage = screen.getByPlaceholderText("Image URL");
+    const inputImage = screen.getByPlaceholderText("https://example.com/image.jpg");
     await userEvent.type(inputImage, "https://cristianfonseca.dev/logo.png");
     const submitButton = screen.getByRole("button");
     await userEvent.click(submitButton);
@@ -36,15 +36,16 @@ describe("Tag Component", () => {
       </WelcomeContextProvider>
     );
 
-    const inputName = screen.getByPlaceholderText("Cristian Fonseca");
+    const inputName = screen.getByPlaceholderText("Enter full name");
     await userEvent.type(inputName, "Cr");
-    const alerts = screen.getAllByRole("alert");
-    const inputImage = screen.getByPlaceholderText("Image URL");
+    const inputImage = screen.getByPlaceholderText("https://example.com/image.jpg");
     await userEvent.type(inputImage, "https://cristianfonseca.de");
     const submitButton = screen.getByRole("button");
     await userEvent.click(submitButton);
+    
+    const alerts = screen.getAllByRole("alert");
     expect(alerts).toHaveLength(2);
     expect(alerts[0].textContent).toMatch("Name must be at least 3 characters");
-    expect(alerts[1].textContent).toMatch("Invalid image url");
+    expect(alerts[1].textContent).toMatch("Must be a valid image URL");
   });
 });

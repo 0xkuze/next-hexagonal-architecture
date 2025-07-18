@@ -1,10 +1,12 @@
-import MillionLint from "@million/lint";
 // @ts-check
 
 /**
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       {
@@ -15,7 +17,4 @@ const nextConfig = {
   },
 };
 
-export default MillionLint.next({
-  enabled: true,
-  rsc: true
-})(nextConfig);
+export default nextConfig;

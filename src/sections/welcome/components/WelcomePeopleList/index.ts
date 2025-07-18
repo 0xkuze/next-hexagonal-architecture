@@ -1,1 +1,1 @@
-export { default as WelcomePeopleList } from './WelcomePeopleList';
+export { default as WelcomePeopleList } from "./WelcomePeopleList";

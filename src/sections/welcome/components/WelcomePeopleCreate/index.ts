@@ -1,1 +1,1 @@
-export { default as WelcomePeopleCreate } from './WelcomePeopleCreate';
+export { default as WelcomePeopleCreate } from "./WelcomePeopleCreate";

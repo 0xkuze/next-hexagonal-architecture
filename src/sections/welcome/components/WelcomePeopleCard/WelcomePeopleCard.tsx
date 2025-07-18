@@ -1,19 +1,25 @@
-import { People } from "@/modules/welcome/domain/People";
 import Image from "next/image";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import type { People } from "@/modules/welcome/domain/People";
 
 const WelcomePeopleCard = ({ people }: { people: People }) => {
   return (
-    <div className="pb-3 bg-gray-500 rounded-lg ">
-      <Image
-        src={people.imageUrl}
-        alt={people.name + "-image"}
-        width={200}
-        height={200}
-        className="rounded-t-lg object-cover w-full max-h-[200px]"
-      />
-
-      <h3 className="px-4 pt-2 text-gray-300">{people.name}</h3>
-    </div>
+    <Card className="group max-w-sm overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-xl">
+      <div className="relative aspect-square overflow-hidden">
+        <Image
+          src={people.imageUrl}
+          alt={`${people.name}-image`}
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      </div>
+      <CardHeader className="pb-4">
+        <CardTitle className="text-center font-semibold text-lg tracking-tight">
+          {people.name}
+        </CardTitle>
+      </CardHeader>
+    </Card>
   );
 };
 

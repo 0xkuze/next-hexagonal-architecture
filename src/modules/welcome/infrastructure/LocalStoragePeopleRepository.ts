@@ -1,6 +1,6 @@
-import { People } from "../domain/People";
-import { PeopleRepository } from "../domain/PeopleRepository";
 import { v4 as uuidv4 } from "uuid";
+import type { People } from "../domain/People";
+import type { PeopleRepository } from "../domain/PeopleRepository";
 
 export function createLocalStoragePeopleRepository(): PeopleRepository {
   return {

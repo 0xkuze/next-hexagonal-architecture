@@ -1,9 +1,13 @@
 "use client";
 import React from "react";
-import { People } from "@/modules/welcome/domain/People";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import type { People } from "@/modules/welcome/domain/People";
 import { useFormPeople } from "@/sections/welcome/hooks/useFormPeople";
 
-const WelcomePeopleCreate = React.memo(() => {
+const WelcomePeopleCreate = React.memo(function WelcomePeopleCreate() {
   const { register, handleSubmit, errors, reset, createPeople } =
     useFormPeople();
 
@@ -17,40 +21,61 @@ const WelcomePeopleCreate = React.memo(() => {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col justify-center gap-2 mt-8 sm:flex-row"
-    >
-      <div className="flex flex-col py-1">
-        <input
-          role="textbox"
-          className="px-2 py-1 leading-tight text-white bg-transparent border-blue-300 rounded-md appearance-none ring-2 focus:border-none focus:outline-none"
-          {...register("name")}
-          placeholder="Cristian Fonseca"
-        />
-        <span role="alert" className="text-red-400">
-          {errors?.name?.message as string}
-        </span>
-      </div>
-      <div className="flex flex-col py-1">
-        <input
-          role="textbox"
-          className="px-2 py-1 leading-tight text-white bg-transparent border-blue-300 rounded-md appearance-none ring-2 focus:border-none focus:outline-none"
-          {...register("imageUrl")}
-          placeholder="Image URL"
-        />
-        <span role="alert" className="text-red-400">
-          {errors?.imageUrl?.message as string}
-        </span>
-      </div>
-      <button
-        role="button"
-        className="px-4 max-h-[32px] mt-0.5 hover:bg-slate-300 duration-200 transition-all bg-slate-200 rounded-md "
-        type="submit"
-      >
-        Save
-      </button>
-    </form>
+    <div className="mx-auto max-w-2xl">
+      <Card className="border-2 shadow-lg">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Add New Person</CardTitle>
+          <CardDescription>
+            Create a new person profile to add to your gallery
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="font-medium text-sm">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  role="textbox"
+                  {...register("name")}
+                  placeholder="Enter full name"
+                  className="h-11"
+                />
+                {errors?.name?.message && (
+                  <span role="alert" className="text-destructive text-sm">
+                    {errors.name.message as string}
+                  </span>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="imageUrl" className="font-medium text-sm">
+                  Image URL
+                </Label>
+                <Input
+                  id="imageUrl"
+                  role="textbox"
+                  {...register("imageUrl")}
+                  placeholder="https://example.com/image.jpg"
+                  className="h-11"
+                />
+                {errors?.imageUrl?.message && (
+                  <span role="alert" className="text-destructive text-sm">
+                    {errors.imageUrl.message as string}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-center pt-4">
+              <Button type="submit" className="px-8 py-2 font-semibold">
+                Add Person
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 });
 
