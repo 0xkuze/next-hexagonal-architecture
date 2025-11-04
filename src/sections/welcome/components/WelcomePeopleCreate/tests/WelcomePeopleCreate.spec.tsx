@@ -1,24 +1,25 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { WelcomeContextProvider } from "@/sections/welcome/context";
 import WelcomePeopleCreate from "../WelcomePeopleCreate";
 
-beforeEach(cleanup);
-const save = vi.fn();
-const repository = {
-  save,
-  get: vi.fn(),
-  getAll: vi.fn(),
-};
+vi.mock("@/app/actions/people", () => ({
+  createPerson: vi.fn().mockResolvedValue({ success: true }),
+}));
 
-describe("Tag Component", () => {
-  it("should render a component of form and filled , and click in the submit button", async () => {
-    render(
-      <WelcomeContextProvider repository={repository}>
-        <WelcomePeopleCreate />
-      </WelcomeContextProvider>
-    );
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    refresh: vi.fn(),
+  }),
+}));
+
+beforeEach(cleanup);
+
+describe("WelcomePeopleCreate Component", () => {
+  it("should render a form and allow submission with valid data", async () => {
+    const { createPerson } = await import("@/app/actions/people");
+
+    render(<WelcomePeopleCreate />);
 
     const inputName = screen.getByPlaceholderText("Enter full name");
     await userEvent.type(inputName, "Cristian");
@@ -29,27 +30,45 @@ describe("Tag Component", () => {
     const submitButton = screen.getByRole("button");
     await userEvent.click(submitButton);
 
-    expect(save).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(createPerson).toHaveBeenCalled();
+    });
   });
-  it("should render a message of error in case of type error in inputs textbox", async () => {
-    render(
-      <WelcomeContextProvider repository={repository}>
-        <WelcomePeopleCreate />
-      </WelcomeContextProvider>
-    );
+
+  it("should validate required fields using HTML5 validation", async () => {
+    render(<WelcomePeopleCreate />);
 
     const inputName = screen.getByPlaceholderText("Enter full name");
-    await userEvent.type(inputName, "Cr");
     const inputImage = screen.getByPlaceholderText(
       "https://example.com/image.jpg"
     );
-    await userEvent.type(inputImage, "https://cristianfonseca.de");
+
+    expect(inputName).toHaveAttribute("required");
+    expect(inputName).toHaveAttribute("minlength", "3");
+    expect(inputName).toHaveAttribute("maxlength", "50");
+    expect(inputImage).toHaveAttribute("required");
+    expect(inputImage).toHaveAttribute("type", "url");
+  });
+
+  it("should display error message when server action fails", async () => {
+    const { createPerson } = await import("@/app/actions/people");
+    vi.mocked(createPerson).mockResolvedValueOnce({
+      error: "Failed to create person",
+    });
+
+    render(<WelcomePeopleCreate />);
+
+    const inputName = screen.getByPlaceholderText("Enter full name");
+    await userEvent.type(inputName, "Cristian");
+    const inputImage = screen.getByPlaceholderText(
+      "https://example.com/image.jpg"
+    );
+    await userEvent.type(inputImage, "https://cristianfonseca.dev/logo.png");
     const submitButton = screen.getByRole("button");
     await userEvent.click(submitButton);
 
-    const alerts = screen.getAllByRole("alert");
-    expect(alerts).toHaveLength(2);
-    expect(alerts[0].textContent).toMatch("Name must be at least 3 characters");
-    expect(alerts[1].textContent).toMatch("Must be a valid image URL");
+    await waitFor(() => {
+      expect(screen.getByText("Failed to create person")).toBeInTheDocument();
+    });
   });
 });

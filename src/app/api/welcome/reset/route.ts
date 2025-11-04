@@ -1,11 +1,11 @@
-import { updateTag } from "next/cache";
 import { NextResponse } from "next/server";
+import { resetStore } from "@/lib/data-store";
 
 export async function POST(_request: Request) {
-  updateTag("people-list");
+  resetStore();
 
   return NextResponse.json({
-    revalidated: true,
+    reset: true,
     now: Date.now(),
   });
 }

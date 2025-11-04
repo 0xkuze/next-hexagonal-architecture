@@ -1,4 +1,8 @@
 describe("template spec", () => {
+  beforeEach(() => {
+    cy.request("POST", "/api/welcome/reset");
+  });
+
   it("passes", () => {
     cy.visit("/");
     cy.findByPlaceholderText("Enter full name").type("My Name");

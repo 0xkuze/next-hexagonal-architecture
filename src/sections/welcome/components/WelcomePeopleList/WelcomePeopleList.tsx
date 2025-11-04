@@ -1,8 +1,8 @@
-import { usePeopleContext } from "../../context";
+import { getPeopleList } from "@/app/actions/people";
 import { WelcomePeopleCard } from "../WelcomePeopleCard";
 
-const WelcomePeopleList = () => {
-  const { peoples } = usePeopleContext();
+const WelcomePeopleList = async () => {
+  const peoples = await getPeopleList();
 
   if (peoples.length === 0) {
     return (

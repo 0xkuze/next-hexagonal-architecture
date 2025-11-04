@@ -4,7 +4,7 @@ import type { People } from "@/modules/welcome/domain/People";
 
 const WelcomePeopleCard = ({ people }: { people: People }) => {
   return (
-    <Card className="group w-full overflow-hidden transition-all duration-300 p-0 hover:scale-105 hover:shadow-xl">
+    <Card className="group w-full overflow-hidden p-0 transition-all duration-300 hover:scale-105 hover:shadow-xl">
       <div className="relative aspect-square overflow-hidden">
         <Image
           src={people.imageUrl}
