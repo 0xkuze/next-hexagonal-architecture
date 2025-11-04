@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       );
     }
 
-    revalidateTag("people-list");
+    revalidateTag("people-list", "max");
 
     return NextResponse.json(result.data, { status: 201 });
   } catch (error) {
