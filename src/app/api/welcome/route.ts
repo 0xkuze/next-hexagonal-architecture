@@ -1,4 +1,4 @@
-import { cacheLife, cacheTag } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { container } from "@/lib/container";
 import { CreatePeopleUseCase } from "@/modules/welcome/application/create/createPeople";
@@ -35,6 +35,8 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
+    revalidateTag("people-list");
 
     return NextResponse.json(result.data, { status: 201 });
   } catch (error) {

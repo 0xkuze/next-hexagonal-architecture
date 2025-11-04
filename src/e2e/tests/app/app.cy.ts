@@ -1,6 +1,7 @@
 describe("template spec", () => {
   beforeEach(() => {
     cy.request("POST", "/api/welcome/reset");
+    cy.wait(200);
   });
 
   it("passes", () => {
@@ -10,6 +11,7 @@ describe("template spec", () => {
       "https://www.zooplus.es/magazine/wp-content/uploads/2022/05/Cuanto-pesa-un-gato-2.jpeg"
     );
     cy.findByText("Add Person").click();
-    cy.findByText("My Name").should("be.visible");
+    cy.wait(500);
+    cy.findAllByText("My Name").should("have.length", 1);
   });
 });

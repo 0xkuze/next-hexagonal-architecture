@@ -1,33 +1,26 @@
 import type { PeopleRepository } from "@/modules/welcome/domain/PeopleRepository";
 import { InMemoryPeopleRepository } from "@/modules/welcome/infrastructure/InMemoryPeopleRepository";
 
+declare global {
+  var __peopleRepository: InMemoryPeopleRepository | undefined;
+}
+
 class Container {
-  private static instance: Container;
-  private repositories: Map<string, unknown> = new Map();
-
-  private constructor() {
-    this.registerRepositories();
-  }
-
-  static getInstance(): Container {
-    if (!Container.instance) {
-      Container.instance = new Container();
+  private getPeopleRepositoryInstance(): InMemoryPeopleRepository {
+    if (!globalThis.__peopleRepository) {
+      globalThis.__peopleRepository = new InMemoryPeopleRepository();
     }
-    return Container.instance;
-  }
-
-  private registerRepositories(): void {
-    this.repositories.set("PeopleRepository", new InMemoryPeopleRepository());
+    return globalThis.__peopleRepository;
   }
 
   getPeopleRepository(): PeopleRepository {
-    return this.repositories.get("PeopleRepository") as PeopleRepository;
+    return this.getPeopleRepositoryInstance();
   }
 
   resetForTesting(): void {
-    const repo = this.getPeopleRepository() as InMemoryPeopleRepository;
+    const repo = this.getPeopleRepositoryInstance();
     repo.clear();
   }
 }
 
-export const container = Container.getInstance();
+export const container = new Container();
