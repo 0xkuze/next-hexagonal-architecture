@@ -1,15 +1,17 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid";
-import { addPersonToStore, getAllPeopleFromStore } from "@/lib/data-store";
-import type { People } from "@/modules/welcome/domain/People";
+import { container } from "@/lib/container";
+import { CreatePeopleUseCase } from "@/modules/welcome/application/create/createPeople";
+import { GetAllPeopleUseCase } from "@/modules/welcome/application/get-all/getAllPeople";
 
 async function getWelcomeData() {
   "use cache";
   cacheTag("people-list");
   cacheLife("hours");
 
-  return getAllPeopleFromStore();
+  const repository = container.getPeopleRepository();
+  const useCase = new GetAllPeopleUseCase(repository);
+  return useCase.execute();
 }
 
 export async function GET(_request: Request) {
@@ -22,22 +24,19 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { name, imageUrl } = body;
 
-    if (!name || !imageUrl) {
+    const repository = container.getPeopleRepository();
+    const useCase = new CreatePeopleUseCase(repository);
+
+    const result = useCase.execute({ name, imageUrl });
+
+    if (!result.success) {
       return NextResponse.json(
-        { error: "Name and imageUrl are required" },
+        { error: result.errors[0].message },
         { status: 400 }
       );
     }
 
-    const newPerson: People = {
-      id: uuidv4(),
-      name,
-      imageUrl,
-    };
-
-    addPersonToStore(newPerson);
-
-    return NextResponse.json(newPerson, { status: 201 });
+    return NextResponse.json(result.data, { status: 201 });
   } catch (error) {
     console.error("Error creating person:", error);
     return NextResponse.json(

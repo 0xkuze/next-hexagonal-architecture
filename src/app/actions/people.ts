@@ -1,65 +1,36 @@
 "use server";
 
-import { revalidatePath, updateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
+import { container } from "@/lib/container";
+import { CreatePeopleUseCase } from "@/modules/welcome/application/create/createPeople";
+import { GetAllPeopleUseCase } from "@/modules/welcome/application/get-all/getAllPeople";
 import type { People } from "@/modules/welcome/domain/People";
 
 export async function getPeopleList(): Promise<People[]> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/welcome`,
-    {
-      cache: "no-store",
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch people list");
-  }
-
-  return response.json();
+  const repository = container.getPeopleRepository();
+  const useCase = new GetAllPeopleUseCase(repository);
+  return useCase.execute();
 }
 
 export async function createPerson(formData: FormData) {
   const name = formData.get("name") as string;
   const imageUrl = formData.get("imageUrl") as string;
 
-  if (!name || !imageUrl) {
+  const repository = container.getPeopleRepository();
+  const useCase = new CreatePeopleUseCase(repository);
+
+  const result = useCase.execute({ name, imageUrl });
+
+  if (!result.success) {
     return {
-      error: "Name and image URL are required",
+      error: result.errors[0].message,
     };
   }
 
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/welcome`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, imageUrl }),
-      }
-    );
+  revalidatePath("/");
 
-    if (!response.ok) {
-      const error = await response.json();
-      return {
-        error: error.error || "Failed to create person",
-      };
-    }
-
-    const person = await response.json();
-
-    updateTag("people-list");
-    revalidatePath("/");
-
-    return {
-      success: true,
-      person,
-    };
-  } catch (error) {
-    console.error("Error creating person:", error);
-    return {
-      error: "Failed to create person",
-    };
-  }
+  return {
+    success: true,
+    person: result.data,
+  };
 }

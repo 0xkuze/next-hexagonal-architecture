@@ -1,6 +1,10 @@
-import type { People } from "./../../domain/People";
-import type { PeopleRepository } from "./../../domain/PeopleRepository";
+import type { People } from "../../domain/People";
+import type { PeopleRepository } from "../../domain/PeopleRepository";
 
-export function getAllPeople(peopleRepository: PeopleRepository): People[] {
-  return peopleRepository.getAll();
+export class GetAllPeopleUseCase {
+  constructor(private readonly repository: PeopleRepository) {}
+
+  async execute(): Promise<People[]> {
+    return this.repository.getPeopleList();
+  }
 }

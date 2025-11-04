@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { resetStore } from "@/lib/data-store";
+import { container } from "@/lib/container";
 
 export async function POST(_request: Request) {
-  resetStore();
+  container.resetForTesting();
 
   return NextResponse.json({
     reset: true,
