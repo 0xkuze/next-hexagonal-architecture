@@ -3,7 +3,7 @@ import { WelcomePeopleCard } from "../WelcomePeopleCard";
 
 const WelcomePeopleList = () => {
   const { peoples } = usePeopleContext();
-  
+
   if (peoples.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16">

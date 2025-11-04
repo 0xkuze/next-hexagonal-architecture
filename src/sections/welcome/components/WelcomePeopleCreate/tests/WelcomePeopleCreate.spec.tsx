@@ -22,7 +22,9 @@ describe("Tag Component", () => {
 
     const inputName = screen.getByPlaceholderText("Enter full name");
     await userEvent.type(inputName, "Cristian");
-    const inputImage = screen.getByPlaceholderText("https://example.com/image.jpg");
+    const inputImage = screen.getByPlaceholderText(
+      "https://example.com/image.jpg"
+    );
     await userEvent.type(inputImage, "https://cristianfonseca.dev/logo.png");
     const submitButton = screen.getByRole("button");
     await userEvent.click(submitButton);
@@ -38,11 +40,13 @@ describe("Tag Component", () => {
 
     const inputName = screen.getByPlaceholderText("Enter full name");
     await userEvent.type(inputName, "Cr");
-    const inputImage = screen.getByPlaceholderText("https://example.com/image.jpg");
+    const inputImage = screen.getByPlaceholderText(
+      "https://example.com/image.jpg"
+    );
     await userEvent.type(inputImage, "https://cristianfonseca.de");
     const submitButton = screen.getByRole("button");
     await userEvent.click(submitButton);
-    
+
     const alerts = screen.getAllByRole("alert");
     expect(alerts).toHaveLength(2);
     expect(alerts[0].textContent).toMatch("Name must be at least 3 characters");

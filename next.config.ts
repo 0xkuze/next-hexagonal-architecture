@@ -1,12 +1,8 @@
-// @ts-check
+import type { NextConfig } from "next";
 
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+const nextConfig: NextConfig = {
+  reactCompiler: true,
+  cacheComponents: true,
   images: {
     remotePatterns: [
       {
